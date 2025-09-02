@@ -1,0 +1,31 @@
+{
+  "name": "task-manager-backend",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "dev": "nodemon app.js",
+    "start": "node app.js"
+  },
+  "keywords": [
+    "Task manager",
+    "Tasks"
+  ],
+  "author": "Arjun",
+  "license": "ISC",
+  "description": "The backend part of simple task manager with user authentication",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "bull": "^4.16.4",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "express": "^4.21.2",
+    "express-jwt": "^8.4.1",
+    "jsonwebtoken": "^8.5.1",
+    "jwks-rsa": "^3.1.0",
+    "mongoose": "^6.2.3",
+    "nodemailer": "^6.9.16"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
