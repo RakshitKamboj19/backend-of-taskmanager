@@ -1,6 +1,5 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const path = require("path");
 const cors = require("cors");
 const serverless = require("serverless-http");
 require("dotenv").config();
@@ -11,9 +10,11 @@ const profileRoutes = require("./routes/profileRoutes");
 
 const app = express();
 
+// Middleware
 app.use(express.json());
 app.use(cors());
 
+// MongoDB connection
 const mongoURI = process.env.MONGO_URI || "your_mongodb_connection_uri";
 
 mongoose
@@ -35,17 +36,15 @@ mongoose
   })
   .catch((err) => console.error("Error connecting to MongoDB:", err));
 
+// API Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/profile", profileRoutes);
 
-// Serve frontend if needed (optional)
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.resolve(__dirname, "./build")));
-  app.get("*", (req, res) =>
-    res.sendFile(path.resolve(__dirname, "./build/index.html"))
-  );
-}
+// Health Check Route (to confirm backend is running)
+app.get("/", (req, res) => {
+  res.json({ message: "Backend is running successfully!" });
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -54,7 +53,7 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: "Internal Server Error" });
 });
 
-// ❌ REMOVE app.listen()
-// ✅ Instead export the handler for Vercel
+// ❌ No app.listen() here
+// ✅ Export for Vercel
 module.exports = app;
 module.exports.handler = serverless(app);
