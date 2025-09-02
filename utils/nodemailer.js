@@ -1,38 +1,41 @@
 const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true, // true = SSL
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
+    user: process.env.EMAIL_USER, // your Gmail
+    pass: process.env.EMAIL_PASS, // your App Password
   },
 });
 
-// Verify transporter at startup to catch configuration issues
-transporter.verify(function(error, success) {
+// Verify transporter at startup
+transporter.verify((error, success) => {
   if (error) {
-    console.error("Nodemailer transporter verification failed:", error);
+    console.error("❌ Nodemailer transporter verification failed:", error);
   } else {
-    console.log("Nodemailer transporter is ready to send emails");
+    console.log("✅ Nodemailer transporter is ready to send emails");
   }
 });
 
-
 async function sendMail(receiverEmail, subject, body) {
-  const effectiveSenderName = process.env.SenderName || "TaskManager";
-  console.log("Sender Name:", effectiveSenderName);
+  const effectiveSenderName = process.env.SENDER_NAME || "TaskManager";
+
   try {
-    await transporter.sendMail({
-      from:`${effectiveSenderName} <${process.env.EMAIL_USER}>`,
+    const info = await transporter.sendMail({
+      from: `${effectiveSenderName} <${process.env.EMAIL_USER}>`,
       to: receiverEmail,
-      subject: subject,
+      subject,
       html: body,
     });
 
-    console.log("Email sent successfully!");
+    console.log("✅ Email sent successfully:", info.messageId);
+    return info;
   } catch (error) {
-    console.error("Error sending email:", error);
+    console.error("❌ Error sending email:", error);
+    throw error;
   }
 }
 
-exports.sendMail = sendMail;
+module.exports = { sendMail };
