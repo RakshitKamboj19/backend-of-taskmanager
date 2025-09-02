@@ -1,7 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const serverless = require("serverless-http");
 require("dotenv").config();
 
 const authRoutes = require("./routes/authRoutes");
@@ -22,26 +21,15 @@ mongoose
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then(() => {
-    const conn = mongoose.connection;
-    const { host, port, name: dbName } = conn;
-    console.log("Connected to MongoDB");
-    console.log("Mongo URI (env or fallback) in use:", mongoURI);
-    console.log("Mongoose connection:", {
-      host,
-      port,
-      dbName,
-      readyState: conn.readyState,
-    });
-  })
-  .catch((err) => console.error("Error connecting to MongoDB:", err));
+  .then(() => console.log("✅ Connected to MongoDB"))
+  .catch((err) => console.error("❌ Error connecting to MongoDB:", err));
 
 // API Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/profile", profileRoutes);
 
-// Health Check Route (to confirm backend is running)
+// Health Check
 app.get("/", (req, res) => {
   res.json({ message: "Backend is running successfully!" });
 });
@@ -49,11 +37,8 @@ app.get("/", (req, res) => {
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error("Internal Server Error:", err.message);
-  console.error(err.stack);
   res.status(500).json({ error: "Internal Server Error" });
 });
 
-// ❌ No app.listen() here
-// ✅ Export for Vercel
+// ✅ Export app directly for Vercel
 module.exports = app;
-module.exports.handler = serverless(app);
