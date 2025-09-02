@@ -23,7 +23,8 @@
     "jsonwebtoken": "^8.5.1",
     "jwks-rsa": "^3.1.0",
     "mongoose": "^6.2.3",
-    "nodemailer": "^6.9.16"
+    "nodemailer": "^6.9.16",
+    "serverless-http": "^4.0.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"
